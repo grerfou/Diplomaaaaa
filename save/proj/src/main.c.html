@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>~/Documents/Diploma/proj/src/main.c.html</title>
+<meta name="Generator" content="Vim/8.0">
+<meta name="plugin-version" content="vim8.1_v2">
+<meta name="syntax" content="c">
+<meta name="settings" content="use_css,pre_wrap,no_foldcolumn,expand_tabs,prevent_copy=,use_input_for_pc=fallback">
+<meta name="colorscheme" content="none">
+<style>
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #ffffff; background-color: #000000; }
+body { font-family: monospace; color: #ffffff; background-color: #000000; }
+* { font-size: 1em; }
+.Constant { color: #ff40ff; }
+.Statement { color: #ffff00; }
+.PreProc { color: #5fd7ff; }
+.Comment { color: #00ffff; }
+.Special { color: #ffd7d7; }
+.Type { color: #87ffaf; }
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="PreProc">#include </span><span class="Constant">&lt;raylib.h&gt;</span>
+<span class="PreProc">#include </span><span class="Constant">&lt;stdio.h&gt;</span>
+<span class="PreProc">#include </span><span class="Constant">&quot;argile.h&quot;</span>
+
+<span class="Type">int</span> main(<span class="Type">void</span>)
+{
+
+
+    <span class="Comment">// ---------------Window--------------------//</span>
+
+    <span class="Comment">//int width = 3840;</span>
+    <span class="Type">int</span> width = <span class="Constant">1920</span>;
+    <span class="Comment">//int height = 2160;</span>
+    <span class="Type">int</span> height = <span class="Constant">1080</span>;
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
+    InitWindow(width, height, <span class="Constant">&quot;Texte animé avec alpha&quot;</span>);
+    SetWindowPosition(<span class="Constant">1920</span>, <span class="Constant">0</span>);
+    <span class="Comment">// Passer en fullscreen fenêtré (bordeless window)</span>
+    SetWindowState(FLAG_WINDOW_UNDECORATED);
+    SetWindowSize(width, height);
+
+    <span class="Comment">// ---------------Window--------------------//</span>
+
+
+
+
+    <span class="Comment">//------ Argile map settings ----------// </span>
+    <span class="Comment">//argileTextPos = (Vector2){ 1570, 340 };</span>
+    <span class="Comment">//argileTextWidth = 200;</span>
+    <span class="Comment">//argileFontSize = 7;</span>
+    <span class="Comment">//argileLineSpacing = 0;</span>
+    <span class="Comment">//argileFadeSpeed = 1.1f;</span>
+    <span class="Comment">//argileMaxLength = 500;</span>
+
+    <span class="Comment">//argileAnglePitch = 1.0f;</span>
+    <span class="Comment">//argileAngleYaw = 45.0f;</span>
+    <span class="Comment">//argileTextAngle = 10.0f;</span>
+    <span class="Comment">//------ Argile map settings ----------// </span>
+
+
+
+
+    <span class="Statement">if</span> (!Argile_Init(<span class="Constant">&quot;./assets/text.txt&quot;</span>)) {
+        CloseWindow();
+        printf(<span class="Constant">&quot;Erreur : impossible de charger text.txt</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+        <span class="Statement">return</span> <span class="Constant">1</span>;
+    }
+
+    SetTargetFPS(<span class="Constant">60</span>);
+
+    <span class="Statement">while</span> (!WindowShouldClose())
+    {
+        BeginDrawing();
+        Argile_Draw();
+        EndDrawing();
+    }
+
+    Argile_Close();
+    CloseWindow();
+
+    <span class="Statement">return</span> <span class="Constant">0</span>;
+}
+
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->

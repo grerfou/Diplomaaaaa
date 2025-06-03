@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>~/Documents/Diploma/effect/shaders/hypnotic.fs.html</title>
+<meta name="Generator" content="Vim/8.1">
+<meta name="plugin-version" content="vim9.0_v1">
+<meta name="syntax" content="none">
+<meta name="settings" content="use_css,no_foldcolumn,expand_tabs,pre_wrap,prevent_copy=,use_input_for_pc=fallback">
+<meta name="colorscheme" content="catppuccin-mocha">
+<style>
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #cdd6f4; background-color: #1e1e2e; }
+body { font-family: monospace; color: #cdd6f4; background-color: #1e1e2e; }
+* { font-size: 1em; }
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+#version 330
+
+out vec4 finalColor;
+
+uniform float time;
+uniform vec2 resolution;
+
+float noise(vec2 p) {
+    return fract(sin(dot(p ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+void main()
+{
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    vec2 center = vec2(0.5);
+    vec2 pos = uv - center;
+
+    float dist = length(pos);
+    float angle = atan(pos.y, pos.x);
+
+    // Swirl hypnotique subtil
+    float swirl = sin(angle * 6.0 + time * 0.5) * 0.04;
+    dist += swirl;
+
+    // Teinte chaude avec contraste renforcé
+    vec3 warmCenter = vec3(0.9, 0.65, 0.4); // orangé doux
+    vec3 warmEdge   = vec3(0.1, 0.05, 0.02); // brun-noir profond
+    vec3 color = mix(warmCenter, warmEdge, pow(dist, 1.5)); // courbe plus dure pour contraste
+
+    // Grain discret
+    float grain = noise(uv * resolution * 6.0 + time * 15.0);
+    color += grain * 0.05;
+
+    // Vignette sombre
+    float vignette = smoothstep(0.5, 0.0, dist);
+    color *= vignette;
+
+    // Assombrissement global pour plus de profondeur
+    color *= 0.8;
+
+    finalColor = vec4(color, 1.0);
+}
+
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->

@@ -1,0 +1,200 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include "raylib.h"
+#include "argile.h"
+#include "paper.h"
+#include "machine.h"
+#include "old.h"
+#include "modern.h"
+
+
+/*
+ * Proj 1 --> Argile, paper
+ * proj 2 --> machine
+ * proj 3 --> old, modern
+*/
+
+
+
+
+
+typedef enum {
+    MODE_ARGILE,
+    MODE_PAPER,
+    MODE_MACHINE,
+    MODE_OLD,
+    MODE_MODERN,
+    MODE_COUNT
+} AppMode;
+
+int main(void) {
+    const int width = 1920;
+    const int height = 1080;
+
+    InitWindow(width, height, "Switch Program with Space");
+
+    //SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
+    //SetWindowPosition(1920, 1);
+    //SetWindowState(FLAG_WINDOW_UNDECORATED);
+    //SetWindowSize(width, height);
+
+    AppMode currentMode = MODE_ARGILE;
+    bool argileLoaded = false;
+    bool paperLoaded = false;
+    bool machineLoaded = false;
+    bool oldLoaded = false;
+    bool modernLoaded = false;
+
+    bool spacePressedLastFrame = false;
+
+    // Initialisation du premier mode
+    if (!Argile_Init("./assets/text.txt")) {
+        CloseWindow();
+        printf("Erreur : impossible de charger text.txt\n");
+        return 1;
+    }
+    argileLoaded = true;
+
+    SetTargetFPS(60);
+
+    while (!WindowShouldClose()) {
+        bool spacePressed = IsKeyPressed(KEY_SPACE);
+
+        if (spacePressed && !spacePressedLastFrame) {
+            // Un seul switch pour tout gérer
+            switch (currentMode) {
+                case MODE_ARGILE:
+                    if (argileLoaded) {
+                        Argile_Close();
+                        argileLoaded = false;
+                    }
+                    break;
+                case MODE_PAPER:
+                    if (paperLoaded) {
+                        Paper_Close();
+                        paperLoaded = false;
+                    }
+                    break;
+                case MODE_MACHINE:
+                    if (machineLoaded) {
+                        Machine_Close();
+                        machineLoaded = false;
+                    }
+                    break;
+                case MODE_OLD:
+                    if (oldLoaded){
+                      Old_Close();
+                      oldLoaded = false;
+                    }
+                    break;
+                case MODE_MODERN:
+                    if (modernLoaded){
+                      Modern_Close();
+                      modernLoaded = false;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            // Changement de mode
+            currentMode = (AppMode)((currentMode + 1) % MODE_COUNT);
+
+            switch (currentMode) {
+                case MODE_ARGILE:
+                    if (!Argile_Init("./assets/text.txt")) {
+                        CloseWindow();
+                        printf("Erreur : impossible de charger text.txt\n");
+                        return 1;
+                    }
+                    argileLoaded = true;
+                    break;
+                case MODE_PAPER:
+                    if (!Paper_Init("./assets/text.txt")) {
+                        CloseWindow();
+                        printf("Erreur : impossible de charger text.txt\n");
+                        return 1;
+                    }
+                    paperLoaded = true;
+                    break;
+                case MODE_MACHINE:
+                    if (!Machine_Init("./assets/text.txt")) {
+                        CloseWindow();
+                        printf("Erreur : impossible de charger text.txt\n");
+                        return 1;
+                    }
+                    machineLoaded = true;
+                    break;
+                case MODE_OLD:
+                    if (!Old_Init("./assets/text.txt")) {
+                      CloseWindow();
+                      printf("Erreur : impossible de charger text.txt\n");
+                      return 1;
+                    }
+                    oldLoaded = true;
+                    break;
+                case MODE_MODERN:
+                    if (!Modern_Init("assets/text.txt")){
+                      CloseWindow();
+                      printf("Erreur : impossible de charger text.txt\n");
+                      return 1;
+                    }
+                    modernLoaded = true; 
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        spacePressedLastFrame = spacePressed;
+
+        BeginDrawing();
+        ClearBackground(BLACK);
+
+        // Un seul switch pour dessin + texte
+        switch (currentMode) {
+            case MODE_ARGILE:
+                if (argileLoaded) Argile_Draw();
+                DrawText("Current Mode: ARGILE", 10, 40, 20, DARKGREEN);
+                break;
+            case MODE_PAPER:
+                if (paperLoaded) Paper_Draw();
+                DrawText("Current Mode: PAPER", 10, 40, 20, DARKGREEN);
+                break;
+            case MODE_MACHINE:
+                if (machineLoaded) Machine_Draw();
+                DrawText("Current Mode: MACHINE", 10, 40, 20, DARKGREEN);
+                break;
+            case MODE_OLD:
+                if (oldLoaded) Old_Draw();
+                DrawText("Current Mode: OLD", 10, 40, 20, DARKGREEN);
+                break;
+            case MODE_MODERN:
+                if (modernLoaded) Modern_Draw();
+                DrawText("Current Mode: MODERN", 10, 40, 20, DARKGREEN);
+                break;
+            default:
+                DrawText("Mode inconnu", 100, 100, 30, RED);
+                DrawText("Current Mode: INCONNU", 10, 40, 20, DARKGREEN);
+                break;
+        }
+
+        DrawText("Press SPACE to switch mode", 10, 10, 20, DARKGRAY);
+
+        EndDrawing();
+    }
+
+    // Fermeture finale selon le mode
+    switch (currentMode) {
+        case MODE_ARGILE: if (argileLoaded) Argile_Close(); break;
+        case MODE_PAPER:  if (paperLoaded) Paper_Close(); break;
+        case MODE_MACHINE: if (machineLoaded) Machine_Close(); break;
+        case MODE_OLD: if (oldLoaded) Old_Close(); break;
+        case MODE_MODERN: if (modernLoaded) Modern_Close(); break;
+        default: break;
+    }
+
+    CloseWindow();
+    return 0;
+}
+

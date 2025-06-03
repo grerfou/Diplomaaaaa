@@ -1,0 +1,2 @@
+export LD_LIBRARY_PATH=./raylib/lib:./curl/lib
+
